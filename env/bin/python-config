@@ -1,4 +1,4 @@
-#!/home/jun/git/python-getting-started/env/bin/python
+#!/home/jun/git/Cloud-Native-Python/env/bin/python
 
 import sys
 import getopt
