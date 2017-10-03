@@ -1,7 +1,64 @@
 from flask import Flask,jsonify,request,abort
 import sqlite3
+from time import gmtime,strftime
      
 app = Flask(__name__)      
+
+"""
+curl http://localhost:5000/api/v2/tweets -v
+run above command to send GET request 
+"""
+@app.route('/api/v2/tweets',methods=['GET'])
+def get_tweets():
+	return list_tweets()
+def list_tweets():
+	conn=sqlite3.connect('mydb.db')
+	print("Opened database successfully")
+	tweet_list=[]
+	cursor=conn.execute("SELECT username,body,tweet_time,id from tweets")
+	for row in cursor:
+		a_dict={}
+		a_dict['username']=row[0]
+		a_dict['body']=row[1]
+		a_dict['tweet_time']=row[2]
+		a_dict['id']=row[3]
+		tweet_list.append(a_dict)
+	conn.close()
+	return jsonify({'tweets_list':tweet_list})
+
+"""
+$ for x in $(seq 14 20)
+> do 
+> curl -i -H "Content-Type: application/json" -X POST -d '{"username":"jun'$x'","body":"xxxx"}' http://localhost:5000/api/v2/tweets
+> sleep 1
+> done
+
+run above command , could automatically add multiple tweets
+-d '{"username":"jun'$x'".....exits for a reason
+"""
+@app.route('/api/v2/tweets',methods=['POST'])
+def add_tweets():
+	print("-------------------------------")
+	print(request.json)
+	print("-------------------------------")
+	if not request.json or not 'username' in request.json or not 'body' in request.json:
+		abort(400)
+	tweet={'username':request.json['username'],'body':request.json['body'],'created_at':strftime("%Y-%m-%dT%H:%M:%SZ",gmtime())}
+	return jsonify({'status':add_tweet(tweet)}),200
+
+def add_tweet(tweet):
+	conn=sqlite3.connect("mydb.db")
+	print("Open database successfully")
+	tweet_list=[]
+	cursor=conn.cursor()
+	cursor.execute("SELECT * from tweets where username=?",(tweet['username'],))
+	data=cursor.fetchall()
+	if len(data) != 0:
+		abort(409)
+	else:
+		cursor.execute("insert into tweets (username,body,tweet_time) values(?,?,?)",(tweet['username'],tweet['body'],tweet['created_at']))
+		conn.commit()
+		return "Success"
 
 """
 curl -i -H "Content-Type: application/json" http://localhost:5000/api/v1/users
