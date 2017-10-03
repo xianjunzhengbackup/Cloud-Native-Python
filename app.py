@@ -30,6 +30,29 @@ def list_users():
 	return jsonify({'user_list':api_list})	
 
 """
+curl http://localhost:5000/api/v1/users/2
+"""
+@app.route('/api/v1/users/<int:user_id>',methods=['GET'])
+def get_user(user_id):
+	return list_user(user_id)
+
+def list_user(user_id):
+	conn=sqlite3.connect('mydb.db')
+	print("Opened database successfully")
+	api_list=[]
+	cursor=conn.cursor()
+	cursor.execute("SELECT * from users where id=?",(user_id,))
+	data=cursor.fetchall()
+	if len(data) != 0:
+		user={}
+		user['username']=data[0][0]
+		user['name']=data[0][1]
+		user['email']=data[0][2]
+		user['password']=data[0][3]
+		user['id']=data[0][4]
+	conn.close()
+	return jsonify(user)
+"""
 curl -i -H "Content-Type: application/json"-X POST -d '{"username":"jun11","email":"jun11@email","password":"111","name":"jun111"}' http://localhost:5000/api/v1/users
 
 The above command could post data to the server
