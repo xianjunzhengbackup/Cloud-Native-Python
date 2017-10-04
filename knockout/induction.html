@@ -1,0 +1,29 @@
+<html>
+<head>
+	<title>Examples</title>
+	<script type="text/javascript" src="knockout-3.4.2.js"></script>
+</head>
+<body>
+	<!--这里绑定了两个东西，一个p tag，一个input，都与下面的self.hello绑定-->
+	<p data-bind="text:hello" ></p>	
+	<input data-bind="value:hello" />
+
+	<p data-bind="text:sayHello" ></p>
+	<input data-bind="value:name" />
+
+	<script>
+		var appViewData = function(){
+			var self = this;
+			//双向绑定，假如网页input改变了数据，p里面也会改变
+			self.hello = ko.observable("Hello World!"); 
+			self.name = ko.observable("xianjun");
+			self.sayHello=ko.computed(function(){
+				return this.hello()+" "+this.name();
+			},slef);	
+		};
+		
+		ko.applyBindings(new appViewData());
+	</script>
+</body>
+</html>
+
