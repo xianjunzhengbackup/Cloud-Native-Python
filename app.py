@@ -61,6 +61,29 @@ def add_tweet(tweet):
 		return "Success"
 
 """
+curl -i -H "Content-Type:application/json" http://localhost:5000/api/v2/1
+"""
+@app.route('/api/v2/tweets/<int:user_id>',methods=['GET'])
+def get_tweet(user_id):
+	return list_tweet(user_id)
+
+def list_tweet(user_id):
+	conn=sqlite3.connect('mydb.db')
+	print("Opened database successfully")
+	tweet_list=[]
+	cursor=conn.cursor()
+	cursor.execute("SELECT * from tweets where id=?",(user_id,))
+	data=cursor.fetchall()
+	if len(data) != 0:
+		tweet={}
+		tweet['username']=data[0][0]
+		tweet['body']=data[0][1]
+		tweet['tweet_time']=data[0][3]
+		tweet['id']=data[0][2]
+	conn.close()
+	return(jsonify(tweet),200)
+		
+"""
 curl -i -H "Content-Type: application/json" http://localhost:5000/api/v1/users
 
 The above command could send GET command to server

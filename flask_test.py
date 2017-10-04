@@ -1,4 +1,3 @@
-
 from app import app
 import unittest
 
@@ -19,3 +18,14 @@ class FlaskappTests(unittest.TestCase):
 		result=self.app.get('/api/v1/users')
 		#assert the status code of the response
 		self.assertEqual(result.status_code,200)
+
+	"""
+	The following code will test whether we get response on http://localhost
+	:5000/api/v2/tweets/<id> where id from 1 to 10 as 200
+	"""
+	def test_tweets_status_code(self):
+		for id in (1,20):
+			link="/api/v2/tweets/%d"%id
+			result=self.app.get(link)
+			print("Test result for ",link,":",result.status_code)
+			self.assertEqual(result.status_code,200)
