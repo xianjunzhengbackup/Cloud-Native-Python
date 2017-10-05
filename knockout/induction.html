@@ -19,7 +19,7 @@
 			self.name = ko.observable("xianjun");
 			self.sayHello=ko.computed(function(){
 				return this.hello()+" "+this.name();
-			},slef);	
+			},self);	
 		};
 		
 		ko.applyBindings(new appViewData());
