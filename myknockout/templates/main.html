@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>My Knock Project</title>
+		<script type="text/javascript" src="knockout-3.4.2.js"></script>
+	</head>
+	<body>
+		<form>
+			<button data-bind="submit:add">ADD</button>
+		</form>
+		<br></br>
+		<form>
+			<button data-bind="submit:del">DEL</button>
+		</form>
+		<script>
+			var appViewData=function(){
+				var self=this;
+				self.add
+			};
+			ko.applyBindings(new appViewData());
+		</script>
+
+	</body>
+</html>
